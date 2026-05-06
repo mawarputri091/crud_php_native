@@ -1,6 +1,14 @@
 <?php
-$id =filter_var($_GET['id'], FILTER_VALIDATE_INT);
-$stmt =$conn->prepare("DELETE FROM tb_absensi WHERE id=?");
-$stmt->bind_param("i",$id);
-$stmt->execute();
-header("Location: index.php");exit;
+require_once 'config/koneksi.php';
+
+if (isset($_GET['id'])) {
+    $id = $_GET['id'];
+    $query = "DELETE FROM tb_absensi WHERE id = $id";
+
+    if ($conn->query($query)) {
+        header("Location: index.php");
+    } else {
+        echo "Gagal Hapus: " . $conn->error;
+    }
+}
+?>

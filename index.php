@@ -1,95 +1,50 @@
+<?php
+require_once 'config/koneksi.php';
+$result = $conn->query("SELECT * FROM tb_absensi ORDER BY id DESC");
+?>
 <!DOCTYPE html>
-<html lang="id">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Data Siswa</title>
+    <title>Data Absensi Pinky</title>
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, sans-serif;
-            background-color: #f4f6f9;
-            padding: 30px;
-        }
-
-        h2 {
-            text-align: center;
-        }
-
-        table {
-            margin: auto;
-            border-collapse: collapse;
-            width: 60%;
-            background: white;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            border-radius: 10px;
-            overflow: hidden;
-        }
-
-        th {
-            background-color: #faa9e0;
-            color: white;
-            padding: 12px;
-        }
-
-        td {
-            padding: 10px;
-            text-align: center;
-        }
-
-        tr:nth-child(even) {
-            background-color: #f2f2f2;
-        }
-
-        tr:hover {
-            background-color: #e0f7e9;
-        }
+        body { font-family: 'Segoe UI', sans-serif; background-color: #ffe4e1; padding: 40px; }
+        .container { max-width: 900px; margin: auto; background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        h2 { color: #d81b60; text-align: center; }
+        .btn-tambah { display: inline-block; background: #ff69b4; color: white; padding: 10px 20px; text-decoration: none; border-radius: 10px; font-weight: bold; margin-bottom: 20px; }
+        table { width: 100%; border-collapse: collapse; }
+        th { background: #ff69b4; color: white; padding: 12px; }
+        td { padding: 12px; border-bottom: 1px solid #ffccdf; text-align: center; }
+        .btn-edit { color: #da70d6; text-decoration: none; font-weight: bold; }
+        .btn-hapus { color: #e91e63; text-decoration: none; font-weight: bold; }
     </style>
 </head>
 <body>
-
-<h2>Data Siswa</h2>
-
-<?php
-require_once 'config/koneksi.php';
-
-// Cek koneksi
-if (!$conn) {
-    die("Koneksi gagal: " . mysqli_connect_error());
-}
-
-// Query data
-$query = "SELECT * FROM tb_absensi ORDER BY id DESC";
-$result = $conn->query($query);
-
-// Cek apakah query berhasil
-if (!$result) {
-    die("Query error: " . $conn->error);
-}
-
-// Tampilkan data dalam tabel
-echo "<table>";
-echo "<tr>
-        <th>ID</th>
-        <th>Nama Siswa</th>
-        <th>Kelas</th>
-        <th>Tanggal</th>
-        <th>Status</th>
-      </tr>";
-
-while ($row = $result->fetch_assoc()) {
-    echo "<tr>";
-    echo "<td>" . htmlspecialchars($row['id']) . "</td>";
-    echo "<td>" . htmlspecialchars($row['nama_siswa']) . "</td>";
-    echo "<td>" . htmlspecialchars($row['kelas']) . "</td>";
-    echo "<td>" . htmlspecialchars($row['tanggal']) . "</td>";
-    echo "<td>" . htmlspecialchars($row['status']) . "</td>";
-    echo "</tr>";
-}
-
-echo "</table>";
-
-// Tutup koneksi
-$conn->close();
-?>
-
+    <div class="container">
+        <h2>Data Absensi Siswa</h2>
+        <a href="tambah.php" class="btn-tambah">+ Tambah Data</a>
+        <table>
+            <tr>
+                <th>No</th>
+                <th>Nama</th>
+                <th>Kelas</th>
+                <th>Tanggal</th>
+                <th>Status</th>
+                <th>Aksi</th>
+            </tr>
+            <?php $no=1; while($row = $result->fetch_assoc()): ?>
+            <tr>
+                <td><?= $no++ ?></td>
+                <td><?= $row['nama_siswa'] ?></td>
+                <td><?= $row['kelas'] ?></td>
+                <td><?= $row['tanggal'] ?></td>
+                <td><?= $row['status'] ?></td>
+                <td>
+                    <a href="edit.php?id=<?= $row['id'] ?>" class="btn-edit">Edit</a> | 
+                    <a href="hapus.php?id=<?= $row['id'] ?>" class="btn-hapus" onclick="return confirm('Hapus data?')">Hapus</a>
+                </td>
+            </tr>
+            <?php endwhile; ?>
+        </table>
+    </div>
 </body>
 </html>
